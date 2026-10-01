@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: email-service
+  namespace: paytm-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: email-service
+  template:
+    metadata:
+      labels:
+        app: email-service
+    spec:
+      containers:
+      - name: email-service
+        image: kastrov/email-service:BUILD_NUMBER
+        ports:
+        - containerPort: 9010
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: "prod"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: email-service-service
+  namespace: paytm-app
+spec:
+  selector:
+    app: email-service
+  ports:
+  - port: 9010
+    targetPort: 9010
+  type: ClusterIP

@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sms-service
+  namespace: paytm-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: sms-service
+  template:
+    metadata:
+      labels:
+        app: sms-service
+    spec:
+      containers:
+      - name: sms-service
+        image: kastrov/sms-service:BUILD_NUMBER
+        ports:
+        - containerPort: 9011
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: "prod"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sms-service-service
+  namespace: paytm-app
+spec:
+  selector:
+    app: sms-service
+  ports:
+  - port: 9011
+    targetPort: 9011
+  type: ClusterIP

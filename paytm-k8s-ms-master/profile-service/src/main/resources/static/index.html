@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Service</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        .status {
+            background: rgba(76, 175, 80, 0.2);
+            border-left: 4px solid #4caf50;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+            color: white;
+        }
+        .description {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin: 20px 0;
+        }
+        .endpoints {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .endpoints h3 {
+            color: white;
+            margin-bottom: 15px;
+        }
+        .endpoints ul {
+            color: rgba(255, 255, 255, 0.8);
+            list-style-type: none;
+            padding: 0;
+        }
+        .endpoints li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .endpoints li:last-child {
+            border-bottom: none;
+        }
+        .back-button {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 20px;
+            transition: background 0.3s;
+        }
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📋 Profile Service</h1>
+        <div class="status">✅ Service is running on port 9005</div>
+        <p class="description">
+            This service manages user profiles, personal information, and account settings. 
+            It provides comprehensive profile management capabilities including photo uploads 
+            and personal data management.
+        </p>
+        <div class="endpoints">
+            <h3>Available Endpoints:</h3>
+            <ul>
+                <li><strong>GET /health</strong> - Health check endpoint</li>
+                <li><strong>GET /profile/{userId}</strong> - Get user profile information</li>
+                <li><strong>PUT /profile/{userId}</strong> - Update user profile</li>
+                <li><strong>POST /upload-photo</strong> - Upload profile photo</li>
+            </ul>
+        </div>
+        <a href="/" class="back-button">← Back to Home</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: transaction-service
+  namespace: paytm-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: transaction-service
+  template:
+    metadata:
+      labels:
+        app: transaction-service
+    spec:
+      containers:
+      - name: transaction-service
+        image: kastrov/transaction-service:BUILD_NUMBER
+        ports:
+        - containerPort: 9003
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: "prod"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: transaction-service-service
+  namespace: paytm-app
+spec:
+  selector:
+    app: transaction-service
+  ports:
+  - port: 9003
+    targetPort: 9003
+  type: ClusterIP

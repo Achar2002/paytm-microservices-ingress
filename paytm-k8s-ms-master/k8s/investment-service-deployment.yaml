@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: investment-service
+  namespace: paytm-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: investment-service
+  template:
+    metadata:
+      labels:
+        app: investment-service
+    spec:
+      containers:
+      - name: investment-service
+        image: kastrov/investment-service:BUILD_NUMBER
+        ports:
+        - containerPort: 9009
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: "prod"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: investment-service-service
+  namespace: paytm-app
+spec:
+  selector:
+    app: investment-service
+  ports:
+  - port: 9009
+    targetPort: 9009
+  type: ClusterIP

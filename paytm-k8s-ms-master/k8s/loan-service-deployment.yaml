@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: loan-service
+  namespace: paytm-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: loan-service
+  template:
+    metadata:
+      labels:
+        app: loan-service
+    spec:
+      containers:
+      - name: loan-service
+        image: kastrov/loan-service:BUILD_NUMBER
+        ports:
+        - containerPort: 9008
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: "prod"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: loan-service-service
+  namespace: paytm-app
+spec:
+  selector:
+    app: loan-service
+  ports:
+  - port: 9008
+    targetPort: 9008
+  type: ClusterIP

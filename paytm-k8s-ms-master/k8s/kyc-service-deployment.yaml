@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kyc-service
+  namespace: paytm-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: kyc-service
+  template:
+    metadata:
+      labels:
+        app: kyc-service
+    spec:
+      containers:
+      - name: kyc-service
+        image: kastrov/kyc-service:BUILD_NUMBER
+        ports:
+        - containerPort: 9006
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: "prod"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kyc-service-service
+  namespace: paytm-app
+spec:
+  selector:
+    app: kyc-service
+  ports:
+  - port: 9006
+    targetPort: 9006
+  type: ClusterIP

@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: push-service
+  namespace: paytm-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: push-service
+  template:
+    metadata:
+      labels:
+        app: push-service
+    spec:
+      containers:
+      - name: push-service
+        image: kastrov/push-service:BUILD_NUMBER
+        ports:
+        - containerPort: 9012
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: "prod"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: push-service-service
+  namespace: paytm-app
+spec:
+  selector:
+    app: push-service
+  ports:
+  - port: 9012
+    targetPort: 9012
+  type: ClusterIP

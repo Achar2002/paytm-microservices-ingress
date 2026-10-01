@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment-gateway
+  namespace: paytm-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: payment-gateway
+  template:
+    metadata:
+      labels:
+        app: payment-gateway
+    spec:
+      containers:
+      - name: payment-gateway
+        image: kastrov/payment-gateway:BUILD_NUMBER
+        ports:
+        - containerPort: 9001
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: "prod"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: payment-gateway-service
+  namespace: paytm-app
+spec:
+  selector:
+    app: payment-gateway
+  ports:
+  - port: 9001
+    targetPort: 9001
+  type: ClusterIP

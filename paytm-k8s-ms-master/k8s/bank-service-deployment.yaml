@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bank-service
+  namespace: paytm-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: bank-service
+  template:
+    metadata:
+      labels:
+        app: bank-service
+    spec:
+      containers:
+      - name: bank-service
+        image: kastrov/bank-service:BUILD_NUMBER
+        ports:
+        - containerPort: 9007
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: "prod"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bank-service-service
+  namespace: paytm-app
+spec:
+  selector:
+    app: bank-service
+  ports:
+  - port: 9007
+    targetPort: 9007
+  type: ClusterIP

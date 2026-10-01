@@ -1,0 +1,368 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: paytm-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - name: frontend
+        image: nginx:alpine
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: frontend-volume
+          mountPath: /usr/share/nginx/html
+      volumes:
+      - name: frontend-volume
+        configMap:
+          name: frontend-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service
+  namespace: paytm-app
+spec:
+  selector:
+    app: frontend
+  ports:
+  - port: 80
+    targetPort: 80
+  type: ClusterIP
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frontend-config
+  namespace: paytm-app
+data:
+  index.html: |
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Paytm Clone - Digital Payment Platform</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            
+            body {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                min-height: 100vh;
+            }
+            
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 20px;
+            }
+            
+            header {
+                background: rgba(255, 255, 255, 0.1);
+                backdrop-filter: blur(10px);
+                border-radius: 15px;
+                padding: 20px;
+                margin-bottom: 30px;
+                text-align: center;
+            }
+            
+            h1 {
+                color: white;
+                font-size: 2.5em;
+                margin-bottom: 10px;
+            }
+            
+            .subtitle {
+                color: rgba(255, 255, 255, 0.8);
+                font-size: 1.2em;
+                margin-bottom: 20px;
+            }
+            
+            .service-selector {
+                margin: 20px 0;
+            }
+            
+            .dropdown {
+                position: relative;
+                display: inline-block;
+                width: 300px;
+            }
+            
+            .dropdown-button {
+                background: rgba(255, 255, 255, 0.2);
+                color: white;
+                padding: 15px 20px;
+                font-size: 16px;
+                border: none;
+                border-radius: 10px;
+                cursor: pointer;
+                width: 100%;
+                text-align: left;
+                backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.3);
+                transition: all 0.3s ease;
+            }
+            
+            .dropdown-button:hover {
+                background: rgba(255, 255, 255, 0.3);
+                transform: translateY(-2px);
+            }
+            
+            .dropdown-content {
+                display: none;
+                position: absolute;
+                background: rgba(255, 255, 255, 0.95);
+                min-width: 100%;
+                box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+                z-index: 1;
+                border-radius: 10px;
+                backdrop-filter: blur(10px);
+                margin-top: 5px;
+                max-height: 400px;
+                overflow-y: auto;
+            }
+            
+            .dropdown-content a {
+                color: #333;
+                padding: 12px 16px;
+                text-decoration: none;
+                display: block;
+                transition: background-color 0.3s;
+                border-bottom: 1px solid rgba(0,0,0,0.1);
+            }
+            
+            .dropdown-content a:hover {
+                background-color: rgba(102, 126, 234, 0.1);
+            }
+            
+            .dropdown-content a:last-child {
+                border-bottom: none;
+            }
+            
+            .dropdown.show .dropdown-content {
+                display: block;
+            }
+            
+            .categories {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 30px;
+                margin-top: 30px;
+            }
+            
+            .category {
+                background: rgba(255, 255, 255, 0.1);
+                backdrop-filter: blur(10px);
+                border-radius: 15px;
+                padding: 25px;
+                border: 1px solid rgba(255, 255, 255, 0.2);
+            }
+            
+            .category h2 {
+                color: white;
+                margin-bottom: 20px;
+                font-size: 1.8em;
+                text-align: center;
+            }
+            
+            .services {
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .service-card {
+                background: rgba(255, 255, 255, 0.2);
+                border-radius: 10px;
+                padding: 15px;
+                cursor: pointer;
+                transition: transform 0.3s, background 0.3s;
+                border: 1px solid rgba(255, 255, 255, 0.3);
+            }
+            
+            .service-card:hover {
+                transform: translateY(-5px);
+                background: rgba(255, 255, 255, 0.3);
+            }
+            
+            .service-card h3 {
+                color: white;
+                margin-bottom: 8px;
+            }
+            
+            .service-card p {
+                color: rgba(255, 255, 255, 0.8);
+                font-size: 0.9em;
+            }
+            
+            .service-card .port {
+                color: #ffd700;
+                font-weight: bold;
+                font-size: 0.8em;
+            }
+            
+            @media (max-width: 768px) {
+                .dropdown {
+                    width: 100%;
+                }
+                
+                .categories {
+                    grid-template-columns: 1fr;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <header>
+                <h1>Paytm Clone</h1>
+                <p class="subtitle">Complete Digital Payment & Financial Services Platform</p>
+                
+                <div class="service-selector">
+                    <div class="dropdown" id="serviceDropdown">
+                        <button class="dropdown-button" onclick="toggleDropdown()">
+                            Select a Service to Access ▼
+                        </button>
+                        <div class="dropdown-content" id="dropdownContent">
+                            <a href="/payment-gateway" target="_blank">🏦 Payment Gateway (Port: 9001)</a>
+                            <a href="/wallet-service" target="_blank">💰 Wallet Service (Port: 9002)</a>
+                            <a href="/transaction-service" target="_blank">📊 Transaction Service (Port: 9003)</a>
+                            <a href="/user-service" target="_blank">👤 User Service (Port: 9004)</a>
+                            <a href="/profile-service" target="_blank">📋 Profile Service (Port: 9005)</a>
+                            <a href="/kyc-service" target="_blank">🔐 KYC Service (Port: 9006)</a>
+                            <a href="/bank-service" target="_blank">🏦 Bank Service (Port: 9007)</a>
+                            <a href="/loan-service" target="_blank">💰 Loan Service (Port: 9008)</a>
+                            <a href="/investment-service" target="_blank">📈 Investment Service (Port: 9009)</a>
+                            <a href="/email-service" target="_blank">📧 Email Service (Port: 9010)</a>
+                            <a href="/sms-service" target="_blank">📱 SMS Service (Port: 9011)</a>
+                            <a href="/push-service" target="_blank">🔔 Push Service (Port: 9012)</a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            
+            <div class="categories">
+                <div class="category">
+                    <h2>💳 Payment Services</h2>
+                    <div class="services">
+                        <div class="service-card" onclick="openService('payment-gateway')">
+                            <h3>Payment Gateway</h3>
+                            <p>Secure payment processing for all transactions</p>
+                            <div class="port">Port: 9001</div>
+                        </div>
+                        <div class="service-card" onclick="openService('wallet-service')">
+                            <h3>Wallet Service</h3>
+                            <p>Digital wallet management and operations</p>
+                            <div class="port">Port: 9002</div>
+                        </div>
+                        <div class="service-card" onclick="openService('transaction-service')">
+                            <h3>Transaction Service</h3>
+                            <p>Transaction history and tracking</p>
+                            <div class="port">Port: 9003</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="category">
+                    <h2>👤 User Management</h2>
+                    <div class="services">
+                        <div class="service-card" onclick="openService('user-service')">
+                            <h3>User Service</h3>
+                            <p>User registration and authentication</p>
+                            <div class="port">Port: 9004</div>
+                        </div>
+                        <div class="service-card" onclick="openService('profile-service')">
+                            <h3>Profile Service</h3>
+                            <p>User profile and settings management</p>
+                            <div class="port">Port: 9005</div>
+                        </div>
+                        <div class="service-card" onclick="openService('kyc-service')">
+                            <h3>KYC Service</h3>
+                            <p>Know Your Customer verification</p>
+                            <div class="port">Port: 9006</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="category">
+                    <h2>🏦 Financial Services</h2>
+                    <div class="services">
+                        <div class="service-card" onclick="openService('bank-service')">
+                            <h3>Bank Service</h3>
+                            <p>Bank account linking and management</p>
+                            <div class="port">Port: 9007</div>
+                        </div>
+                        <div class="service-card" onclick="openService('loan-service')">
+                            <h3>Loan Service</h3>
+                            <p>Personal and business loan processing</p>
+                            <div class="port">Port: 9008</div>
+                        </div>
+                        <div class="service-card" onclick="openService('investment-service')">
+                            <h3>Investment Service</h3>
+                            <p>Investment portfolio management</p>
+                            <div class="port">Port: 9009</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="category">
+                    <h2>📱 Notification Services</h2>
+                    <div class="services">
+                        <div class="service-card" onclick="openService('email-service')">
+                            <h3>Email Service</h3>
+                            <p>Email notification delivery</p>
+                            <div class="port">Port: 9010</div>
+                        </div>
+                        <div class="service-card" onclick="openService('sms-service')">
+                            <h3>SMS Service</h3>
+                            <p>SMS notification and alerts</p>
+                            <div class="port">Port: 9011</div>
+                        </div>
+                        <div class="service-card" onclick="openService('push-service')">
+                            <h3>Push Service</h3>
+                            <p>Push notification management</p>
+                            <div class="port">Port: 9012</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <script>
+            function toggleDropdown() {
+                document.getElementById("serviceDropdown").classList.toggle("show");
+            }
+            
+            function openService(serviceName) {
+                window.open(`/${serviceName}`, '_blank');
+            }
+            
+            // Close dropdown when clicking outside
+            window.onclick = function(event) {
+                if (!event.target.matches('.dropdown-button')) {
+                    var dropdowns = document.getElementsByClassName("dropdown");
+                    for (var i = 0; i < dropdowns.length; i++) {
+                        var openDropdown = dropdowns[i];
+                        if (openDropdown.classList.contains('show')) {
+                            openDropdown.classList.remove('show');
+                        }
+                    }
+                }
+            }
+        </script>
+    </body>
+    </html>

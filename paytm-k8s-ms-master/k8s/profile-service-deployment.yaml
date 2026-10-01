@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: profile-service
+  namespace: paytm-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: profile-service
+  template:
+    metadata:
+      labels:
+        app: profile-service
+    spec:
+      containers:
+      - name: profile-service
+        image: kastrov/profile-service:BUILD_NUMBER
+        ports:
+        - containerPort: 9005
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: "prod"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: profile-service-service
+  namespace: paytm-app
+spec:
+  selector:
+    app: profile-service
+  ports:
+  - port: 9005
+    targetPort: 9005
+  type: ClusterIP
